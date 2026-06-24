@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/momentum-agent/",
+  base: process.env.VITE_APP_MOBILE === "true" ? "/" : "/momentum-agent/",
   plugins: [
     react(),
     tailwindcss()
