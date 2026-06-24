@@ -32,11 +32,15 @@ app.get("/", (req, res) => {
 // Connect to Database and start server
 async function startServer() {
   await connectToDB();
-  startNotificationScheduler();
   
-  app.listen(80, () => {
-      console.log(chalk.cyan("🚀 Server is running on port 80"));
-  });
+  if (!process.env.VERCEL) {
+    startNotificationScheduler();
+    app.listen(80, () => {
+        console.log(chalk.cyan("🚀 Server is running on port 80"));
+    });
+  } else {
+    console.log(chalk.cyan("🚀 Running in Vercel Serverless environment"));
+  }
 }
 
 startServer();

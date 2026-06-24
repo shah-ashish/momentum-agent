@@ -31,8 +31,12 @@ export function initVapidKeys() {
       } else {
         console.log("🔑 VAPID Keys: Generating new public/private keys...");
         vapidKeys = webpush.generateVAPIDKeys();
-        fs.writeFileSync(VAPID_KEY_PATH, JSON.stringify(vapidKeys, null, 2), "utf-8");
-        console.log("🔑 VAPID Keys: Keys successfully saved to notification/vapid.json.");
+        try {
+          fs.writeFileSync(VAPID_KEY_PATH, JSON.stringify(vapidKeys, null, 2), "utf-8");
+          console.log("🔑 VAPID Keys: Keys successfully saved to notification/vapid.json.");
+        } catch (writeErr) {
+          console.log("⚠️ VAPID Keys: Read-only filesystem. Keeping keys in-memory.");
+        }
       }
     } catch (err) {
       console.error("❌ Failed to initialize VAPID keys file fallback:", err);
