@@ -45,6 +45,11 @@ jobs:
           cd client
           npx cap add android
 
+      - name: Patch AndroidManifest.xml for exact alarms
+        run: |
+          cd client
+          node patch-manifest.js
+
       - name: Make Gradle Wrapper Executable
         run: chmod +x client/android/gradlew
 

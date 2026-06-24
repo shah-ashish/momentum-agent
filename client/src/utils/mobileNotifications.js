@@ -22,13 +22,25 @@ export async function scheduleMobileNotifications(tasks) {
       }
     }
 
-    // 2. Clear all previously scheduled notifications to avoid duplicates
+    // 2. Create a high-importance channel (essential for Android 8.0+ to make sound/pop-up)
+    const channelId = 'task-alarms';
+    await LocalNotifications.createChannel({
+      id: channelId,
+      name: 'Task Alarms & Reminders',
+      description: 'High-priority alarms and reminders for scheduled tasks',
+      importance: 5, // Max importance (makes sound and displays heads-up/banners)
+      visibility: 1, // Show on lock screen
+      sound: null, // Use default system ringtone/alarm sound
+      vibration: true
+    });
+
+    // 3. Clear all previously scheduled notifications to avoid duplicates
     const pending = await LocalNotifications.getPending();
     if (pending.notifications && pending.notifications.length > 0) {
       await LocalNotifications.cancel(pending);
     }
 
-    // 3. Schedule a native notification for each task starting in the future
+    // 4. Schedule a native notification for each task starting in the future
     const notificationsToSchedule = [];
     const now = new Date();
 
@@ -44,10 +56,13 @@ export async function scheduleMobileNotifications(tasks) {
 
         notificationsToSchedule.push({
           id: numericId,
-          title: `⏰ Task Alert: ${task.label}`,
-          body: `${task.sub || ""} (${task.start} - ${task.end})`,
-          schedule: { at: startTime },
-          sound: null, // Uses default system notification sound
+          title: `🚨 Alarm: ${task.label}`,
+          body: `${task.sub || ""} (Scheduled: ${task.start} - ${task.end})`,
+          channelId: channelId, // Link to high importance channel
+          schedule: { 
+            at: startTime,
+            allowWhileIdle: true // Delivery precisely at the scheduled time even when phone is in doze/power-saving mode
+          },
           extra: { taskId: task._id }
         });
       }
@@ -57,7 +72,7 @@ export async function scheduleMobileNotifications(tasks) {
       await LocalNotifications.schedule({
         notifications: notificationsToSchedule
       });
-      console.log(`✅ Scheduled ${notificationsToSchedule.length} native alarms/reminders.`);
+      console.log(`✅ Scheduled ${notificationsToSchedule.length} native exact alarms.`);
     }
   } catch (err) {
     console.error('❌ Failed to schedule native local notifications:', err);
