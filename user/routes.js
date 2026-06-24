@@ -33,10 +33,11 @@ router.post("/login-signup", async (req, res) => {
 
       // Generate JWT and set HttpOnly Cookie
       const token = generateToken(normalizedEmail, authResult.user.name);
+      const isProd = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false, // set to true in production
-        sameSite: "strict",
+        secure: isProd,
+        sameSite: isProd ? "none" : "strict",
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       });
 
@@ -59,10 +60,11 @@ router.post("/login-signup", async (req, res) => {
 
       // Generate JWT and set HttpOnly Cookie
       const token = generateToken(normalizedEmail, regResult.user.name);
+      const isProd = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false, // set to true in production
-        sameSite: "strict",
+        secure: isProd,
+        sameSite: isProd ? "none" : "strict",
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       });
 
@@ -93,10 +95,11 @@ router.get("/verify", authenticateToken, (req, res) => {
  * Clears HttpOnly cookie.
  */
 router.post("/logout", (req, res) => {
+  const isProd = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false, // matches setting on login
-    sameSite: "strict"
+    secure: isProd,
+    sameSite: isProd ? "none" : "strict"
   });
   return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
