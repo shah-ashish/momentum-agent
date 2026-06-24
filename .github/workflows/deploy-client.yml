@@ -1,0 +1,39 @@
+name: Deploy Client to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Change to match your repository's default branch
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # prevents concurrent deployment conflicts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install and Build Client 🔧
+        run: |
+          cd client
+          npm ci
+          npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+
+      - name: Deploy Client to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: client/dist # Folder compiled by Vite
+          branch: gh-pages # Target deployment branch
+          clean: true

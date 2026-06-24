@@ -1,0 +1,37 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+
+# Local environment secret variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+
+# VAPID Private/Public keys
+notification/vapid.json
+client/public/vapid.json
+
+# Build outputs
+dist/
+build/
+out/
+client/dist/
+client/build/
+
+# Debug and system logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Mobile project files (Capacitor/Android build folders)
+client/android/
+client/ios/
+*.apk
+*.keystore
