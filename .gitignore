@@ -31,7 +31,7 @@ pnpm-debug.log*
 Thumbs.db
 
 # Mobile project files (Capacitor/Android build folders)
-client/android/
+# client/android/
 client/ios/
 *.apk
 *.keystore

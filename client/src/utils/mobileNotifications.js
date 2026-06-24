@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { setDeviceAlarm } from '../alarm/nativeAlarm.js';
 
 /**
  * Automatically schedules native system alarms (local notifications) for upcoming tasks
@@ -54,6 +55,7 @@ export async function scheduleMobileNotifications(tasks) {
         // Generate a unique 32-bit integer ID from the MongoDB ObjectId
         const numericId = parseInt(task._id?.substring(0, 8), 16) || (index + 100);
 
+        // A: Schedule local notification (heads-up popup alert)
         notificationsToSchedule.push({
           id: numericId,
           title: `🚨 Alarm: ${task.label}`,
@@ -65,6 +67,14 @@ export async function scheduleMobileNotifications(tasks) {
           },
           extra: { taskId: task._id }
         });
+
+        // B: Set a native Clock app alarm using our custom Java plugin!
+        const [hourStr, minuteStr] = task.start.split(":");
+        const hour = parseInt(hourStr, 10);
+        const minute = parseInt(minuteStr, 10);
+        if (!isNaN(hour) && !isNaN(minute)) {
+          setDeviceAlarm(hour, minute, task.label);
+        }
       }
     });
 
