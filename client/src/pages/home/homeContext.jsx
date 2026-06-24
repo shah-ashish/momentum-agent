@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect, useCallback, u
 import { useAuth } from "../../user/userContext";
 import { sendChatMessageApi, fetchTasksApi } from "./homeApi";
 import { homeReducer, initialState } from "./homeReducer";
+import { scheduleMobileNotifications } from "../../utils/mobileNotifications.js";
 
 const HomeContext = createContext();
 
@@ -24,6 +25,7 @@ export function HomeProvider({ children }) {
       const targetDate = dateString || getLocalYYYYMMDD();
       const response = await fetchTasksApi(targetDate);
       dispatch({ type: "FETCH_TASKS_SUCCESS", payload: response.tasks || [] });
+      scheduleMobileNotifications(response.tasks || []);
     } catch (err) {
       dispatch({ type: "FETCH_TASKS_FAILURE", payload: err.message });
     }
