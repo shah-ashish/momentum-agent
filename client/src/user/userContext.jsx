@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
 
       try {
         // 1. Register background Service Worker
-        const registration = await navigator.serviceWorker.register("/notification-worker.js");
+        const registration = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}notification-worker.js`);
         console.log("Service Worker registered successfully.");
 
         // 2. Request browser notifications permission
