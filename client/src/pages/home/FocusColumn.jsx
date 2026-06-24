@@ -41,18 +41,8 @@ export function FocusColumn({ isCompleted, toggleComplete }) {
     description = activeTask.note;
   }
 
-  // Determine if this task type supports LLM Agent chat queries (only jobsearch and interview/practice)
-  const showLlmIcon =
-    activeTask.type === "jobsearch" ||
-    activeTask.type === "interview" ||
-    activeTask.icon === "briefcase" ||
-    activeTask.icon === "book" ||
-    activeTask.label.toLowerCase().includes("job") ||
-    activeTask.label.toLowerCase().includes("interview") ||
-    activeTask.label.toLowerCase().includes("practice") ||
-    activeTask.sub.toLowerCase().includes("job") ||
-    activeTask.sub.toLowerCase().includes("interview") ||
-    activeTask.sub.toLowerCase().includes("practice");
+  // Determine if this task type supports LLM Agent chat queries (enabled for all tasks to allow general assistant help)
+  const showLlmIcon = true;
 
   return (
     <section className="lg:col-span-7 flex flex-col text-left">
