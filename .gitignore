@@ -35,3 +35,5 @@ client/android/
 client/ios/
 *.apk
 *.keystore
+
+.vercel

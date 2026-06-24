@@ -3,7 +3,9 @@ name: Deploy Client to GitHub Pages
 on:
   push:
     branches:
-      - main # Change to match your repository's default branch
+      - main
+  workflow_dispatch:
+
 
 permissions:
   contents: write
